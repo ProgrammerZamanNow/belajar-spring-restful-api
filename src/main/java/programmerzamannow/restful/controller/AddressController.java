@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import programmerzamannow.restful.entity.User;
 import programmerzamannow.restful.model.AddressResponse;
 import programmerzamannow.restful.model.CreateAddressRequest;
+import programmerzamannow.restful.model.UpdateAddressRequest;
 import programmerzamannow.restful.model.WebResponse;
 import programmerzamannow.restful.service.AddressService;
 
@@ -36,6 +37,22 @@ public class AddressController {
                                             @PathVariable("contactId") String contactId,
                                             @PathVariable("addressId") String addressId) {
         AddressResponse addressResponse = addressService.get(user, contactId, addressId);
+        return WebResponse.<AddressResponse>builder().data(addressResponse).build();
+    }
+
+    @PutMapping(
+            path = "/api/contacts/{contactId}/addresses/{addressId}",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<AddressResponse> update(User user,
+                                               @RequestBody UpdateAddressRequest request,
+                                               @PathVariable("contactId") String contactId,
+                                               @PathVariable("addressId") String addressId) {
+        request.setContactId(contactId);
+        request.setAddressId(addressId);
+
+        AddressResponse addressResponse = addressService.update(user, request);
         return WebResponse.<AddressResponse>builder().data(addressResponse).build();
     }
 }
